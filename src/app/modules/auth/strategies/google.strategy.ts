@@ -21,6 +21,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
+    console.log('AT VALIDATE', config.G_OAUTH_REDIRECT_URL);
+
     const { name, emails, photos } = profile;
     const data = {
       id: profile.id,
