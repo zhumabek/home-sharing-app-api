@@ -13,6 +13,7 @@ export const config = {
   G_CLIENT_ID: process.env.G_CLIENT_ID,
   G_CLIENT_SECRET: process.env.G_CLIENT_SECRET,
   CLIENT_SIGN_IN_URL: process.env.CLIENT_SIGN_IN_URL,
+  G_OAUTH_REDIRECT_URL: process.env.G_OAUTH_REDIRECT_URL,
 };
 
 export const JWT_CONFIG: JwtModuleOptions = {
