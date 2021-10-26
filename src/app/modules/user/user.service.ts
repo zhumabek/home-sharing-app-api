@@ -43,7 +43,7 @@ export class UserService {
     }
   }
 
-  async getById(id: string): Promise<AppResponse<UserEntity>> {
+  async getProfile(id: string): Promise<AppResponse<UserEntity>> {
     try {
       const user = await this.userRepo.findOne(id);
       if (!user) {
@@ -51,20 +51,6 @@ export class UserService {
       }
 
       return { data: user };
-    } catch (error) {
-      this.logger.log(error);
-      throw error;
-    }
-  }
-
-  async getByEmail(email: string): Promise<AppResponse> {
-    try {
-      const user = await this.userRepo.findOne({ email });
-      if (!user) {
-        throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
-      }
-
-      return { data: { isExist: true } };
     } catch (error) {
       this.logger.log(error);
       throw error;

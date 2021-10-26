@@ -22,3 +22,9 @@ export class LogInWithSocialNetworkDto {
   @IsString()
   avatar: string;
 }
+
+export class LogInDto {
+  @IsNotEmpty()
+  @IsString()
+  idToken: string;
+}

@@ -1,12 +1,19 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AppResponse } from '../../utils/shared.types';
-import { LogInWithSocialNetworkDto } from './dto/auth.dto';
-import { UserEntity } from '../../entities';
-import * as queryString from 'query-string';
+
 import { LogInResponse } from './interfaces';
-import { config } from '../../config/app.config';
+import { FIREBASE_CONFIG } from '../../config/app.config';
 import { UserRepository } from '../../repositories';
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  signInWithCredential,
+  GoogleAuthProvider,
+} from 'firebase/auth';
+
+// Initialize Firebase
+const app = initializeApp(FIREBASE_CONFIG);
 
 @Injectable()
 export class AuthService {
@@ -16,60 +23,29 @@ export class AuthService {
     private readonly logger: Logger,
   ) {}
 
-  async getUserByToken(token: string): Promise<AppResponse<LogInResponse>> {
+  async logInViaGoogle(idToken: string): Promise<AppResponse<LogInResponse>> {
     try {
-      const jwtPayload = await this.jwtService.verifyAsync(token);
-      const user = await this.userRepo.findOne({
-        id: jwtPayload.id,
-        email: jwtPayload.email,
-      });
-      if (!user) {
-        throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
-      }
+      const credential = GoogleAuthProvider.credential(idToken);
 
-      return { data: { user, token } };
-    } catch (error) {
-      this.logger.log(error);
-      throw error;
-    }
-  }
+      const auth = getAuth();
+      const {
+        user: { displayName, email, photoURL },
+      } = await signInWithCredential(auth, credential);
 
-  async validateGoogleLogIn(
-    data: LogInWithSocialNetworkDto,
-  ): Promise<UserEntity> {
-    try {
-      const { id, email, firstName, lastName, avatar } = data;
-
-      const user = await this.userRepo.findOne({ email, googleId: id });
+      const user = await this.userRepo.findOne({ email });
 
       if (!user) {
         const newUser = this.userRepo.create();
         newUser.email = email;
-        newUser.googleId = id;
-        newUser.firstName = firstName;
-        newUser.lastName = lastName;
-        newUser.avatar = avatar;
+        newUser.firstName = displayName.split(' ')[0];
+        newUser.lastName = displayName.split(' ')[1];
+        newUser.avatar = photoURL;
         await newUser.save();
 
-        return newUser;
+        return { data: { user: newUser, idToken: credential.idToken } };
       }
 
-      return user;
-    } catch (error) {
-      this.logger.log(error);
-      throw error;
-    }
-  }
-
-  async logInViaGoogle(user: UserEntity, res): Promise<void> {
-    try {
-      const token = this.jwtService.sign({
-        id: user.id,
-        email: user.email,
-      });
-
-      const queryToken = queryString.stringify({ token });
-      res.redirect(`${config.CLIENT_SIGN_IN_URL}?${queryToken}`);
+      return { data: { user, idToken: credential.idToken } };
     } catch (error) {
       this.logger.log(error);
       throw error;

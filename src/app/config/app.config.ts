@@ -16,6 +16,15 @@ export const config = {
   G_OAUTH_REDIRECT_URL: process.env.G_OAUTH_REDIRECT_URL,
 };
 
+export const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyB8YnDZnQKqb068bZA6ZJxO7XNqc7Zbk1o',
+  authDomain: 'tiny-house-node-app.firebaseapp.com',
+  projectId: 'tiny-house-node-app',
+  storageBucket: 'tiny-house-node-app.appspot.com',
+  messagingSenderId: '807967345789',
+  appId: '1:807967345789:web:0871d36d349f6f4555f514',
+};
+
 export const JWT_CONFIG: JwtModuleOptions = {
   secret: config.JWT_SECRET_KEY,
   signOptions: {

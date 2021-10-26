@@ -21,9 +21,6 @@ export class UserEntity extends AppBaseEntity {
   @Column('varchar', { nullable: true })
   walletNumber: string;
 
-  @Column('varchar', { nullable: false, unique: true })
-  googleId: string;
-
   @Column('varchar', { nullable: true })
   avatar: string;
 }

@@ -7,7 +7,14 @@ import {
 } from '@nestjs/common';
 import { UserEntity } from '../../entities';
 import { JwtService } from '@nestjs/jwt';
-import { LoginJwtPayload } from '../../modules/auth/interfaces';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithCredential,
+} from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { FIREBASE_CONFIG } from '../../config/app.config';
+const app = initializeApp(FIREBASE_CONFIG);
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -23,16 +30,26 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Token is not provided!');
     }
 
-    const user: UserEntity = await this.validateByToken(token);
+    const user: UserEntity = await this.validateByIdToken(token);
     if (!user) {
-      throw new UnauthorizedException('Jwt token is invalid or has expired!');
+      throw new UnauthorizedException('Token is invalid or has expired!');
     }
     request.user = user;
     return true;
   }
 
-  async validateByToken(token: string): Promise<UserEntity> {
-    const payload: LoginJwtPayload = await this.jwtService.verifyAsync(token);
-    return await UserEntity.findOne({ id: payload.id });
+  async validateByIdToken(idToken: string): Promise<UserEntity> {
+    try {
+      const credential = GoogleAuthProvider.credential(idToken);
+
+      const auth = getAuth();
+      const {
+        user: { email },
+      } = await signInWithCredential(auth, credential);
+
+      return UserEntity.findOne({ email });
+    } catch (error) {
+      throw error;
+    }
   }
 }

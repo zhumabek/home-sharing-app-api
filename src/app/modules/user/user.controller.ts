@@ -4,7 +4,7 @@ import {
   Get,
   Param,
   Put,
-  Query,
+  Req,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -28,13 +28,9 @@ export class UserController {
     return this.userService.update(id, data);
   }
 
-  @Get('')
-  getByEmail(@Query('email') email: string): Promise<AppResponse> {
-    return this.userService.getByEmail(email);
-  }
-
-  @Get('/:id')
-  getById(@Param('id') id: string): Promise<AppResponse<UserEntity>> {
-    return this.userService.getById(id);
+  @Auth()
+  @Get('/profile')
+  getById(@Req() req): Promise<AppResponse<UserEntity>> {
+    return this.userService.getProfile(req.user.id);
   }
 }
