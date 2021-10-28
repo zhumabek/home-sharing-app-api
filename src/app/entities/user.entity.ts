@@ -1,5 +1,6 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { AppBaseEntity } from './app-base-entity';
+import { ListingEntity } from './listing.entity';
 
 @Entity('users')
 export class UserEntity extends AppBaseEntity {
@@ -23,4 +24,11 @@ export class UserEntity extends AppBaseEntity {
 
   @Column('varchar', { nullable: true })
   avatar: string;
+
+  @OneToMany(
+    () => ListingEntity,
+    listing => listing.host,
+    { onDelete: 'CASCADE' },
+  )
+  listings: ListingEntity[];
 }
