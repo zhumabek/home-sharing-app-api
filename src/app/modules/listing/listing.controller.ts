@@ -6,14 +6,18 @@ import {
   Post,
   Put,
   Req,
+  UploadedFile,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { AppResponse } from '../../utils/shared.types';
+import { AppResponse, MulterFile } from '../../utils/shared.types';
 import { ListingEntity } from '../../entities';
 import { ListingService } from './listing.service';
 import { ListingDto } from './dto/user.dto';
 import { Auth } from '../../shared/decorators/auth.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadedImageResponse } from './interfaces';
 
 @Controller('listing')
 export class ListingController {
@@ -40,10 +44,24 @@ export class ListingController {
     return this.listingService.create(data, req.user.id);
   }
 
-  @Auth()
-  @Post('/all')
+  @Get('/all')
   @UsePipes(ValidationPipe)
   getAll(): Promise<AppResponse<ListingEntity[]>> {
     return this.listingService.getAll();
+  }
+
+  @Get('/:id')
+  @UsePipes(ValidationPipe)
+  getById(@Param('id') id: string): Promise<AppResponse<ListingEntity>> {
+    return this.listingService.getById(id);
+  }
+
+  @Auth()
+  @Post('upload/image')
+  @UseInterceptors(FileInterceptor('image'))
+  uploadImage(
+    @UploadedFile() file: MulterFile,
+  ): Promise<UploadedImageResponse> {
+    return this.listingService.uploadImage(file);
   }
 }

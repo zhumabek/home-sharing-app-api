@@ -12,9 +12,11 @@ import {
   ListingRepository,
   UserRepository,
 } from '../../repositories';
-import { AppResponse } from '../../utils/shared.types';
+import { AppResponse, MulterFile } from '../../utils/shared.types';
 import { ListingEntity } from '../../entities';
 import { ListingDto } from './dto/user.dto';
+import { UploadedImageResponse } from './interfaces';
+import { config } from '../../config/app.config';
 
 @Injectable()
 export class ListingService {
@@ -35,7 +37,7 @@ export class ListingService {
     try {
       const listing = await this.listingRepo.findOne(listingId);
       if (!listing) {
-        throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+        throw new HttpException('Listing not found.', HttpStatus.NOT_FOUND);
       }
 
       listing.title = data.address;
@@ -89,6 +91,34 @@ export class ListingService {
       const listings = await this.listingRepo.find();
 
       return { data: listings };
+    } catch (error) {
+      this.logger.log(error);
+      throw error;
+    }
+  }
+
+  async getById(id: string): Promise<AppResponse<ListingEntity>> {
+    try {
+      const listing = await this.listingRepo.findOne(id);
+      if (!listing) {
+        throw new HttpException('Listing not found.', HttpStatus.NOT_FOUND);
+      }
+      return { data: listing };
+    } catch (error) {
+      this.logger.log(error);
+      throw error;
+    }
+  }
+
+  async uploadImage(file: MulterFile): Promise<UploadedImageResponse> {
+    try {
+      const image = await this.imageRepo.upload(
+        file,
+        config.LISTING_IMAGES_DIR_NAME,
+        ['jpeg', 'png'],
+      );
+
+      return { imageId: image.id };
     } catch (error) {
       this.logger.log(error);
       throw error;

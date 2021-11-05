@@ -14,6 +14,7 @@ export const config = {
   G_CLIENT_SECRET: process.env.G_CLIENT_SECRET,
   CLIENT_SIGN_IN_URL: process.env.CLIENT_SIGN_IN_URL,
   G_OAUTH_REDIRECT_URL: process.env.G_OAUTH_REDIRECT_URL,
+  LISTING_IMAGES_DIR_NAME: 'listings',
 };
 
 export const FIREBASE_CONFIG = {
