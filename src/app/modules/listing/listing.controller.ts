@@ -56,6 +56,14 @@ export class ListingController {
     return this.listingService.getById(id);
   }
 
+  @Get('/city/:cityId')
+  @UsePipes(ValidationPipe)
+  getListingsByCityId(
+    @Param('cityId') cityId: string,
+  ): Promise<AppResponse<ListingEntity[]>> {
+    return this.listingService.getListingsByCityId(cityId);
+  }
+
   @Auth()
   @Post('upload/image')
   @UseInterceptors(FileInterceptor('image'))

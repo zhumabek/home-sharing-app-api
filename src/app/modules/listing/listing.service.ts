@@ -97,6 +97,20 @@ export class ListingService {
     }
   }
 
+  async getListingsByCityId(
+    cityId: string,
+  ): Promise<AppResponse<ListingEntity[]>> {
+    try {
+      const city = await this.cityRepo.findOne(cityId);
+      const listings = await this.listingRepo.find({ where: { city } });
+
+      return { data: listings };
+    } catch (error) {
+      this.logger.log(error);
+      throw error;
+    }
+  }
+
   async getById(id: string): Promise<AppResponse<ListingEntity>> {
     try {
       const listing = await this.listingRepo.findOne(id);
