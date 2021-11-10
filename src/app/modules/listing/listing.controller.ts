@@ -45,7 +45,6 @@ export class ListingController {
   }
 
   @Get('/all')
-  @UsePipes(ValidationPipe)
   getAll(): Promise<AppResponse<ListingEntity[]>> {
     return this.listingService.getAll();
   }

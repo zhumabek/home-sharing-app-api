@@ -22,6 +22,7 @@ export class ListingEntity extends AppBaseEntity {
     onDelete: 'CASCADE',
     nullable: false,
   })
+  @JoinColumn()
   image: ImageEntity;
 
   @ManyToOne(

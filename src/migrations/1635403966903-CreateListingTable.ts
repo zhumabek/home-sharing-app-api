@@ -56,7 +56,7 @@ export class CreateListingTable1635403966903 implements MigrationInterface {
             default: 0,
           },
           {
-            name: 'numOfQuests',
+            name: 'numOfGuests',
             type: 'integer',
             isNullable: false,
             default: 0,
