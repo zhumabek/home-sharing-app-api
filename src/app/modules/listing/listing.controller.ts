@@ -41,6 +41,7 @@ export class ListingController {
     @Req() req,
     @Body() data: ListingDto,
   ): Promise<AppResponse<ListingEntity>> {
+    console.log(data);
     return this.listingService.create(data, req.user.id);
   }
 
