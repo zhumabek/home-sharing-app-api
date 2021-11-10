@@ -36,7 +36,7 @@ export class ListingController {
 
   @Auth()
   @Post('/add')
-  @UsePipes(ValidationPipe)
+  // @UsePipes(ValidationPipe)
   create(
     @Req() req,
     @Body() data: ListingDto,
