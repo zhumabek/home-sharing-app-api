@@ -36,12 +36,11 @@ export class ListingController {
 
   @Auth()
   @Post('/add')
-  // @UsePipes(ValidationPipe)
+  @UsePipes(ValidationPipe)
   create(
     @Req() req,
     @Body() data: ListingDto,
   ): Promise<AppResponse<ListingEntity>> {
-    console.log(data);
     return this.listingService.create(data, req.user.id);
   }
 
