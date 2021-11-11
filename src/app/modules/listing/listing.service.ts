@@ -122,9 +122,9 @@ export class ListingService {
         address: `%${searchValue}%`,
       });
 
-      await qb.andWhere('listing.price ILIKE :price', {
-        price: `%${searchValue}%`,
-      });
+      // await qb.andWhere('listing.price ILIKE :price', {
+      //   price: `%${searchValue}%`,
+      // });
 
       await qb.andWhere('city.title ILIKE :cityTitle', {
         cityTitle: `%${searchValue}%`,
