@@ -130,10 +130,7 @@ export class ListingService {
         cityTitle: `%${searchValue}%`,
       });
 
-      const listings = await qb
-        .skip(0)
-        .take(5)
-        .getMany();
+      const listings = await qb.getMany();
 
       return { data: listings };
     } catch (error) {
