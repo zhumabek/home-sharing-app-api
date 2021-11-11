@@ -114,11 +114,11 @@ export class ListingService {
         .leftJoinAndSelect('listing.city', 'city')
         .leftJoinAndSelect('listing.image', 'image');
 
-      await qb.andWhere('listing.title ILIKE :title', {
+      await qb.orWhere('listing.title ILIKE :title', {
         title: `%${searchValue}%`,
       });
 
-      await qb.andWhere('listing.address ILIKE :address', {
+      await qb.orWhere('listing.address ILIKE :address', {
         address: `%${searchValue}%`,
       });
 
@@ -126,7 +126,7 @@ export class ListingService {
       //   price: `%${searchValue}%`,
       // });
 
-      await qb.andWhere('city.title ILIKE :cityTitle', {
+      await qb.orWhere('city.title ILIKE :cityTitle', {
         cityTitle: `%${searchValue}%`,
       });
 
