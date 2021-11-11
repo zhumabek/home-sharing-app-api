@@ -17,6 +17,7 @@ import { ListingEntity } from '../../entities';
 import { ListingDto } from './dto/user.dto';
 import { UploadedImageResponse } from './interfaces';
 import { config } from '../../config/app.config';
+import { ILike } from 'typeorm';
 
 @Injectable()
 export class ListingService {
@@ -86,9 +87,53 @@ export class ListingService {
     }
   }
 
-  async getAll(): Promise<AppResponse<ListingEntity[]>> {
+  async getAll(cityId = ''): Promise<AppResponse<ListingEntity[]>> {
     try {
-      const listings = await this.listingRepo.find();
+      let whereQuery = {} as any;
+
+      if (cityId) {
+        whereQuery = { where: { city: await this.cityRepo.findOne(cityId) } };
+      }
+
+      const listings = await this.listingRepo.find(whereQuery);
+
+      return { data: listings };
+    } catch (error) {
+      this.logger.log(error);
+      throw error;
+    }
+  }
+
+  async searchListings(
+    searchValue = '',
+  ): Promise<AppResponse<ListingEntity[]>> {
+    try {
+      const qb = await this.listingRepo
+        .createQueryBuilder('listing')
+        .leftJoinAndSelect('listing.host', 'host')
+        .leftJoinAndSelect('listing.city', 'city')
+        .leftJoinAndSelect('listing.image', 'image');
+
+      await qb.andWhere('listing.title ILIKE :title', {
+        title: `%${searchValue}%`,
+      });
+
+      await qb.andWhere('listing.address ILIKE :address', {
+        address: `%${searchValue}%`,
+      });
+
+      await qb.andWhere('listing.price ILIKE :price', {
+        price: `%${searchValue}%`,
+      });
+
+      await qb.andWhere('city.title ILIKE :cityTitle', {
+        cityTitle: `%${searchValue}%`,
+      });
+
+      const listings = await qb
+        .skip(0)
+        .take(5)
+        .getMany();
 
       return { data: listings };
     } catch (error) {

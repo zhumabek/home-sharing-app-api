@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -45,8 +46,17 @@ export class ListingController {
   }
 
   @Get('/all')
-  getAll(): Promise<AppResponse<ListingEntity[]>> {
-    return this.listingService.getAll();
+  getAll(
+    @Query('cityId') cityId?: string,
+  ): Promise<AppResponse<ListingEntity[]>> {
+    return this.listingService.getAll(cityId);
+  }
+
+  @Get('/search')
+  searchListings(
+    @Query('value') value?: string,
+  ): Promise<AppResponse<ListingEntity[]>> {
+    return this.listingService.searchListings(value);
   }
 
   @Get('/:id')
