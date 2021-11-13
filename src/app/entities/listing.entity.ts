@@ -1,8 +1,16 @@
-import { Entity, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { AppBaseEntity } from './app-base-entity';
 import { UserEntity } from './user.entity';
 import { CityEntity } from './city.entity';
 import { ImageEntity } from './image.entity';
+import { BookingEntity } from './booking.entity';
 
 export enum ListingType {
   APARTMENT = 'APARTMENT',
@@ -52,4 +60,10 @@ export class ListingEntity extends AppBaseEntity {
 
   @Column('enum', { enum: ListingType, default: ListingType.APARTMENT })
   type: ListingType;
+
+  @OneToMany(
+    () => BookingEntity,
+    booking => booking.listing,
+  )
+  bookings: BookingEntity[];
 }

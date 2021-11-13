@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Put,
+  Query,
   Req,
   UsePipes,
   ValidationPipe,
@@ -30,7 +31,10 @@ export class UserController {
 
   @Auth()
   @Get('/profile')
-  getById(@Req() req): Promise<AppResponse<UserEntity>> {
-    return this.userService.getProfile(req.user.id);
+  getById(
+    @Req() req,
+    @Query('listings') withListings?: string,
+  ): Promise<AppResponse<UserEntity>> {
+    return this.userService.getProfile(req.user.id, !!withListings);
   }
 }

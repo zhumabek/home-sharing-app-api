@@ -1,6 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { AppBaseEntity } from './app-base-entity';
 import { ListingEntity } from './listing.entity';
+import { BookingEntity } from './booking.entity';
 
 @Entity('users')
 export class UserEntity extends AppBaseEntity {
@@ -31,4 +32,11 @@ export class UserEntity extends AppBaseEntity {
     { onDelete: 'CASCADE' },
   )
   listings: ListingEntity[];
+
+  @OneToMany(
+    () => BookingEntity,
+    booking => booking.tenant,
+    { onDelete: 'CASCADE' },
+  )
+  bookings: BookingEntity[];
 }

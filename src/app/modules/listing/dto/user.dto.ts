@@ -34,3 +34,13 @@ export class ListingDto {
   @IsNumber()
   numOfGuests: number;
 }
+
+export class BookingDto {
+  @IsString()
+  @IsNotEmpty()
+  checkIn: Date;
+
+  @IsString()
+  @IsNotEmpty()
+  checkOut: Date;
+}

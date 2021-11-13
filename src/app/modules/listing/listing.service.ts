@@ -13,8 +13,8 @@ import {
   UserRepository,
 } from '../../repositories';
 import { AppResponse, MulterFile } from '../../utils/shared.types';
-import { ListingEntity } from '../../entities';
-import { ListingDto } from './dto/user.dto';
+import { BookingEntity, ListingEntity } from '../../entities';
+import { BookingDto, ListingDto } from './dto/user.dto';
 import { UploadedImageResponse } from './interfaces';
 import { config } from '../../config/app.config';
 import { ILike } from 'typeorm';
@@ -175,6 +175,28 @@ export class ListingService {
       );
 
       return { imageId: image.id };
+    } catch (error) {
+      this.logger.log(error);
+      throw error;
+    }
+  }
+
+  async bookListing(
+    listingId: string,
+    data: BookingDto,
+    tenantId: string,
+  ): Promise<AppResponse> {
+    try {
+      const booking = new BookingEntity();
+
+      booking.listing = await this.listingRepo.findOne(listingId);
+      booking.tenant = await this.userRepo.findOne(tenantId);
+      booking.checkIn = data.checkIn;
+      booking.checkOut = data.checkOut;
+
+      await booking.save();
+
+      return { message: 'Бронирование жиля успешно.' };
     } catch (error) {
       this.logger.log(error);
       throw error;

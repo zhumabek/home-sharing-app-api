@@ -1,13 +1,20 @@
 require('dotenv').config();
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import {
+  BookingEntity,
   CityEntity,
   ImageEntity,
   ListingEntity,
   UserEntity,
 } from '../../entities';
 
-export const ENTITIES = [UserEntity, ImageEntity, CityEntity, ListingEntity];
+export const ENTITIES = [
+  UserEntity,
+  ImageEntity,
+  CityEntity,
+  ListingEntity,
+  BookingEntity,
+];
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'postgres',

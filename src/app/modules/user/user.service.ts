@@ -43,9 +43,17 @@ export class UserService {
     }
   }
 
-  async getProfile(id: string): Promise<AppResponse<UserEntity>> {
+  async getProfile(
+    id: string,
+    withListings: boolean,
+  ): Promise<AppResponse<UserEntity>> {
     try {
-      const user = await this.userRepo.findOne(id);
+      const relations = withListings
+        ? {
+            relations: ['listings', 'bookings'],
+          }
+        : undefined;
+      const user = await this.userRepo.findOne(id, relations);
       if (!user) {
         throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
       }

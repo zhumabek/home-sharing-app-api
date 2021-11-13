@@ -15,7 +15,7 @@ import {
 import { AppResponse, MulterFile } from '../../utils/shared.types';
 import { ListingEntity } from '../../entities';
 import { ListingService } from './listing.service';
-import { ListingDto } from './dto/user.dto';
+import { BookingDto, ListingDto } from './dto/user.dto';
 import { Auth } from '../../shared/decorators/auth.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadedImageResponse } from './interfaces';
@@ -80,5 +80,16 @@ export class ListingController {
     @UploadedFile() file: MulterFile,
   ): Promise<UploadedImageResponse> {
     return this.listingService.uploadImage(file);
+  }
+
+  @Auth()
+  @Post('/:id/book')
+  @UsePipes(ValidationPipe)
+  bookListing(
+    @Req() req,
+    @Param('id') listingId: string,
+    @Body() data: BookingDto,
+  ): Promise<AppResponse<ListingEntity>> {
+    return this.listingService.bookListing(listingId, data, req.user.id);
   }
 }
