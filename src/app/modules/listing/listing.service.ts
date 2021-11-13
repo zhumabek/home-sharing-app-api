@@ -17,7 +17,6 @@ import { BookingEntity, ListingEntity } from '../../entities';
 import { BookingDto, ListingDto } from './dto/user.dto';
 import { UploadedImageResponse } from './interfaces';
 import { config } from '../../config/app.config';
-import { ILike } from 'typeorm';
 
 @Injectable()
 export class ListingService {
@@ -67,7 +66,7 @@ export class ListingService {
   ): Promise<AppResponse<ListingEntity>> {
     try {
       const listing = new ListingEntity();
-      listing.title = data.address;
+      listing.title = data.title;
       listing.description = data.description;
       listing.address = data.address;
       listing.type = data.type;
