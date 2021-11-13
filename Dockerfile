@@ -6,9 +6,6 @@ COPY package-lock.json /app
 
 RUN npm install
 
-#for storing static files
-RUN mkdir -p /app/static
-
 COPY . .
 
 EXPOSE 8000
