@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -63,6 +64,12 @@ export class ListingController {
   @UsePipes(ValidationPipe)
   getById(@Param('id') id: string): Promise<AppResponse<ListingEntity>> {
     return this.listingService.getById(id);
+  }
+
+  @Delete('/:id')
+  @UsePipes(ValidationPipe)
+  deleteById(@Param('id') id: string): Promise<AppResponse<ListingEntity>> {
+    return this.listingService.deleteById(id);
   }
 
   @Get('/city/:cityId')

@@ -165,6 +165,20 @@ export class ListingService {
     }
   }
 
+  async deleteById(id: string): Promise<AppResponse> {
+    try {
+      const listing = await this.listingRepo.delete(id);
+      if (!listing) {
+        throw new HttpException('Listing not found.', HttpStatus.NOT_FOUND);
+      }
+
+      return { data: listing, message: 'Listing successfully deleted!' };
+    } catch (error) {
+      this.logger.log(error);
+      throw error;
+    }
+  }
+
   async uploadImage(file: MulterFile): Promise<UploadedImageResponse> {
     try {
       const image = await this.imageRepo.upload(
