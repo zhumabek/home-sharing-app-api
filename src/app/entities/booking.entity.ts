@@ -14,7 +14,7 @@ export class BookingEntity extends AppBaseEntity {
   @ManyToOne(
     () => ListingEntity,
     listing => listing.bookings,
-    { onDelete: 'CASCADE' },
+    { onDelete: 'CASCADE', eager: true },
   )
   @JoinColumn()
   listing: ListingEntity;
